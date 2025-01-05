@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>landing pages</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navigation Menu Styles */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+
+        .nav-container.scrolled {
+            background-color: #555;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .menu-bar {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 25px;
+            height: 20px;
+            cursor: pointer;
+            margin-right: 60px; /* Move menu bar slightly to the left */
+
+        }
+
+        .menu-bar div {
+            background-color: white;
+            height: 3px;
+            width: 100%;
+            border-radius: 2px;
+            transition: transform 0.3s;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+            margin-right: 30px; /* Move navigation menu slightly to the left */
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            font-size: 1rem;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #ff6347;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .menu-bar {
+                display: flex;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 50px;
+                right: 20px;
+                background-color: #333;
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+        }
+
+        /* Placeholder Content */
+        .section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .section:nth-child(odd) {
+            background-color: #f4f4f4;
+        }
+
+        .section:nth-child(even) {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container" id="navContainer">
+       
+        <div class="menu-bar" id="menuBar">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <nav class="nav-menu" id="navMenu">
+            <a href="#section1">Home</a>
+            <a href="#section2">About</a>
+            <a href="#section3">Services</a>
+            <a href="#section4">Contact</a>
+        </nav>
+    </div>
+
+    <div class="section" id="section1">Home Section</div>
+    <div class="section" id="section2">About Section</div>
+    <div class="section" id="section3">Services Section</div>
+    <div class="section" id="section4">Contact Section</div>
+
+    <script>
+        const navContainer = document.getElementById('navContainer');
+        const menuBar = document.getElementById('menuBar');
+        const navMenu = document.getElementById('navMenu');
+
+        // Change background color on scroll
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navContainer.classList.add('scrolled');
+            } else {
+                navContainer.classList.remove('scrolled');
+            }
+        });
+
+        // Toggle menu for smaller screens
+        menuBar.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
