@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Circle and Stopwatch</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #121212; /* Dark background */
+            color: #fff; /* White text */
+            transition: all 0.3s ease;
+        }
+
+        /* Gradient Circle Styles */
+        .gradient-circle {
+            width: 150px;
+            height: 75px;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            border-top-left-radius: 150px;
+            border-top-right-radius: 150px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            transform: rotate(0deg);
+            margin-bottom: 30px;
+            box-shadow: 0 0 10px rgba(255, 126, 95, 0.8); /* Glowing effect */
+        }
+
+        /* Stopwatch Styles */
+        .stopwatch {
+            background: #333;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            max-width: 300px;
+            width: 100%;
+            transform: scale(1);
+            animation: glow 2s infinite alternate;
+        }
+
+        /* Glowing effect for stopwatch display */
+        .stopwatch-display {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 20px #ff7e5f, 0 0 30px #feb47b; /* Glowing text */
+        }
+
+        /* Button Styles */
+        .stopwatch-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .stopwatch-buttons button {
+            flex: 1;
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #ff7e5f;
+            box-shadow: 0 0 10px rgba(255, 126, 95, 0.8); /* Glowing effect */
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .stopwatch-buttons button:hover {
+            background: #feb47b;
+            transform: scale(1.1);
+        }
+
+        .stopwatch-buttons button:active {
+            transform: scale(1);
+        }
+
+        /* Laps Section Styles */
+        .laps {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .laps h3 {
+            margin: 0 0 10px;
+            font-size: 1.2rem;
+            color: #ff7e5f; /* Glowing title */
+            text-shadow: 0 0 10px #ff7e5f;
+        }
+
+        .laps ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .laps li {
+            background: #222;
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        /* Lap Count Box */
+        .lap-count {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff7e5f; /* Glowing lap count */
+            text-shadow: 0 0 10px #ff7e5f;
+        }
+
+        /* Animation for glowing effect */
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 10px #ff7e5f, 0 0 20px #feb47b;
+            }
+            100% {
+                box-shadow: 0 0 20px #ff7e5f, 0 0 30px #feb47b;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+
+    <!-- Stopwatch -->
+    <div class="stopwatch">
+        <div class="stopwatch-display" id="stopwatchDisplay">00:00:00</div>
+        <div class="stopwatch-buttons">
+            <button id="startButton">Start</button>
+            <button id="pauseButton">Pause</button>
+            <button id="resetButton">Reset</button>
+            <button id="lapButton">Lap</button> <!-- New Lap Button -->
+        </div>
+        <div class="laps">
+            <div class="lap-count" id="lapCount">Lap Count: 0</div>
+            <ul id="lapsList"></ul>
+        </div>
+    </div>
+
+    <script>
+        let stopwatchInterval;
+        let elapsedTime = 0;
+        let isRunning = false;
+        let lapCount = 0;
+
+        const display = document.getElementById('stopwatchDisplay');
+        const lapsList = document.getElementById('lapsList');
+        const lapCountDisplay = document.getElementById('lapCount');
+
+        const startButton = document.getElementById('startButton');
+        const pauseButton = document.getElementById('pauseButton');
+        const resetButton = document.getElementById('resetButton');
+        const lapButton = document.getElementById('lapButton'); // New Lap Button
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            const milliseconds = String(ms % 1000).padStart(3, '0').slice(0, 2);
+            return `${minutes}:${seconds}:${milliseconds}`;
+        }
+
+        function updateDisplay() {
+            display.textContent = formatTime(elapsedTime);
+        }
+
+        function startStopwatch() {
+            if (!isRunning) {
+                isRunning = true;
+                const startTime = Date.now() - elapsedTime;
+                stopwatchInterval = setInterval(() => {
+                    elapsedTime = Date.now() - startTime;
+                    updateDisplay();
+                }, 10);
+            }
+        }
+
+        function pauseStopwatch() {
+            if (isRunning) {
+                isRunning = false;
+                clearInterval(stopwatchInterval);
+            }
+        }
+
+        function resetStopwatch() {
+            isRunning = false;
+            clearInterval(stopwatchInterval);
+            elapsedTime = 0;
+            lapCount = 0;
+            updateDisplay();
+            lapsList.innerHTML = '';
+            lapCountDisplay.textContent = `Lap Count: 0`;
+        }
+
+        function addLap() {
+            lapCount++;
+            const lapItem = document.createElement('li');
+            lapItem.textContent = formatTime(elapsedTime);
+            lapsList.appendChild(lapItem);
+            lapCountDisplay.textContent = `Lap Count: ${lapCount}`;
+        }
+
+        // Event Listeners
+        startButton.addEventListener('click', startStopwatch);
+        pauseButton.addEventListener('click', pauseStopwatch);
+        resetButton.addEventListener('click', resetStopwatch);
+        lapButton.addEventListener('click', addLap); // Added event listener for lap button
+
+    </script>
+</body>
+</html>
